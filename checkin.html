@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>S23 — Check in</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;700;800;900&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#050506; --ink-2:#0c0c0e; --ink-3:#141417;
+  --red:#a81a1c; --red-hot:#e8262b;
+  --bone:#f6f6f7; --dim:#8b8c92; --line:rgba(246,246,247,.11); --line-2:rgba(246,246,247,.055);
+  --in:#3ddc97; --owe:#ffb020;
+  --f-d:'Big Shoulders Display',Impact,sans-serif;
+  --f-b:'Sora',system-ui,sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:#08080a;color:var(--bone);font-family:var(--f-b);font-weight:300;
+  -webkit-font-smoothing:antialiased;font-size:16px;line-height:1.55;
+  display:flex;flex-direction:column;align-items:center;min-height:100dvh}
+h1,h2,h3,.d{font-family:var(--f-d);font-weight:900;text-transform:uppercase;line-height:.86;margin:0;letter-spacing:.01em}
+button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit}
+:focus-visible{outline:2px solid var(--red-hot);outline-offset:3px}
+
+/* ══ demo chrome ══ */
+.demo{width:100%;background:rgba(12,12,14,.9);border-bottom:1px solid var(--line-2);padding:.7rem 1rem;
+  display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;justify-content:center;position:sticky;top:0;z-index:50;backdrop-filter:blur(14px)}
+.demo em{font-style:normal;font-size:.54rem;text-transform:uppercase;letter-spacing:.2em;color:var(--dim);font-weight:600;margin-right:.3rem}
+.chip{font-size:.7rem;padding:.45rem .8rem;border-radius:20px;border:1px solid var(--line);color:var(--dim);
+  background:rgba(246,246,247,.03);transition:all .2s;white-space:nowrap}
+.chip:hover{color:var(--bone);border-color:rgba(246,246,247,.3)}
+.chip[aria-pressed="true"]{background:linear-gradient(160deg,var(--red-hot),var(--red));color:#fff;border-color:rgba(255,255,255,.24)}
+.chip--link{margin-left:auto;color:var(--dim)}
+
+/* ══ phone ══ */
+.stage{flex:1;display:grid;place-items:center;padding:clamp(1rem,4vw,2.5rem) 1rem;width:100%}
+.phone{width:min(100%,372px);border-radius:38px;padding:12px;
+  background:linear-gradient(160deg,#242429,#0a0a0c);border:1px solid rgba(246,246,247,.15);
+  box-shadow:0 50px 90px -34px rgba(0,0,0,1)}
+@media(max-width:520px){.phone{border:0;padding:0;border-radius:0;background:none;box-shadow:none;width:100%}}
+.screen{position:relative;overflow:hidden;background:var(--ink);border-radius:28px;min-height:640px;
+  display:flex;flex-direction:column;padding:1.6rem 1.35rem 1.5rem}
+@media(max-width:520px){.screen{border-radius:0;min-height:calc(100dvh - 60px)}}
+.screen::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(76% 46% at 50% 0%,rgba(168,26,28,.3),transparent 64%);transition:background .6s}
+.screen.good::before{background:radial-gradient(76% 46% at 50% 0%,rgba(61,220,151,.22),transparent 64%)}
+.screen>*{position:relative;z-index:1}
+
+.brand{display:flex;align-items:center;justify-content:space-between;flex:none;margin-bottom:1.5rem}
+.mk{font-family:var(--f-d);font-weight:900;font-size:1.4rem;letter-spacing:.03em}
+.mk i{font-style:normal;color:var(--red-hot)}
+.sess{font-size:.6rem;text-transform:uppercase;letter-spacing:.16em;color:var(--dim);text-align:right;font-weight:500}
+
+.pane{display:none;flex-direction:column;flex:1;animation:fade .4s cubic-bezier(.2,.9,.3,1)}
+.pane.on{display:flex}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.mid{flex:1;display:flex;flex-direction:column;justify-content:center;text-align:center;gap:.3rem}
+.kick{font-size:.6rem;text-transform:uppercase;letter-spacing:.22em;color:var(--dim);font-weight:600}
+.pane h2{font-size:2.1rem;margin:.5rem 0 .3rem}
+.lede{color:var(--dim);font-size:.92rem;margin:.5rem 0 0}
+
+.qr{width:132px;height:132px;margin:0 auto 1.4rem;border-radius:16px;display:grid;place-items:center;
+  background:linear-gradient(160deg,rgba(246,246,247,.09),rgba(246,246,247,.02));border:1px solid var(--line);font-size:3.4rem}
+
+.go{display:flex;align-items:center;justify-content:center;gap:.5rem;width:100%;
+  font-family:var(--f-d);font-weight:800;text-transform:uppercase;font-size:1.12rem;letter-spacing:.07em;
+  padding:1.1rem 1.4rem;border-radius:15px;background:linear-gradient(160deg,var(--red-hot),var(--red));color:#fff;
+  border:1px solid rgba(255,255,255,.2);box-shadow:0 1px 0 rgba(255,255,255,.26) inset,0 18px 34px -16px rgba(232,38,43,.9);
+  transition:transform .18s cubic-bezier(.2,.9,.3,1),filter .2s;margin-top:auto}
+.go:hover{filter:brightness(1.08)}.go:active{transform:scale(.98)}
+.go--ghost{background:rgba(246,246,247,.05);border-color:var(--line);color:var(--bone);box-shadow:none;margin-top:.6rem}
+.go--ghost:hover{background:rgba(246,246,247,.1)}
+.go--in{background:linear-gradient(160deg,#4ee5a4,#25b87a);box-shadow:0 1px 0 rgba(255,255,255,.3) inset,0 18px 34px -16px rgba(61,220,151,.8);color:#04160e}
+
+.inp{width:100%;padding:1rem 1.05rem;border-radius:14px;border:1px solid var(--line);background:var(--ink-3);
+  color:var(--bone);font-family:inherit;font-size:1.05rem;font-weight:300;margin-bottom:.55rem}
+.inp:focus{outline:none;border-color:rgba(232,38,43,.6)}
+.inp::placeholder{color:var(--dim)}
+.hits{display:flex;flex-direction:column;gap:.35rem;overflow-y:auto;max-height:250px;margin-bottom:.5rem}
+.hit{display:flex;align-items:center;gap:.7rem;padding:.75rem .85rem;border-radius:13px;text-align:left;width:100%;
+  background:rgba(246,246,247,.05);border:1px solid var(--line-2);transition:all .18s}
+.hit:hover{border-color:rgba(246,246,247,.26);transform:translateX(2px)}
+.hit b{font-weight:500;font-size:.95rem;display:block}
+.hit span{font-size:.72rem;color:var(--dim)}
+.hit .st{margin-left:auto;font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;padding:.28rem .5rem;border-radius:7px;font-weight:600}
+.st--ok{background:rgba(61,220,151,.14);color:var(--in);border:1px solid rgba(61,220,151,.4)}
+.st--owe{background:rgba(255,176,32,.14);color:var(--owe);border:1px solid rgba(255,176,32,.42)}
+.none{text-align:center;color:var(--dim);font-size:.85rem;padding:1rem 0}
+
+/* locked station */
+.lock{position:relative;margin:.4rem 0 1.1rem;padding:1.5rem 1rem;border-radius:18px;
+  background:linear-gradient(160deg,rgba(255,176,32,.09),rgba(255,176,32,.02));border:1px solid rgba(255,176,32,.32)}
+.lock .num{font-family:var(--f-d);font-weight:900;font-size:4.6rem;line-height:.85;color:var(--owe);
+  filter:blur(13px);opacity:.55;user-select:none;transition:filter .8s cubic-bezier(.2,.9,.3,1),opacity .8s,color .8s}
+.lock.open .num{filter:none;opacity:1;color:var(--in)}
+.lock .cap{font-size:.6rem;text-transform:uppercase;letter-spacing:.2em;color:var(--owe);font-weight:600;margin-top:.5rem}
+.lock.open{background:linear-gradient(160deg,rgba(61,220,151,.13),rgba(61,220,151,.03));border-color:rgba(61,220,151,.42)}
+.lock.open .cap{color:var(--in)}
+.due{display:flex;align-items:baseline;justify-content:center;gap:.5rem;margin-bottom:1rem}
+.due b{font-family:var(--f-d);font-weight:900;font-size:2.6rem;line-height:1;color:var(--bone)}
+.due span{font-size:.78rem;color:var(--dim)}
+
+/* result */
+.tick{width:60px;height:60px;border-radius:50%;background:rgba(61,220,151,.15);border:1px solid rgba(61,220,151,.5);
+  display:grid;place-items:center;color:var(--in);font-size:1.7rem;margin:0 auto .8rem;
+  animation:bounce .6s cubic-bezier(.2,1.3,.4,1)}
+@keyframes bounce{0%{transform:scale(.4);opacity:0}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.bignum{font-family:var(--f-d);font-weight:900;font-size:6.4rem;line-height:.8;color:var(--in);margin:.2rem 0}
+.with{font-size:1rem;margin-top:.7rem}.with b{font-weight:500}
+.note{margin-top:auto;padding-top:1rem;border-top:1px solid var(--line-2);font-size:.75rem;color:var(--dim);text-align:center}
+
+.wait{display:flex;align-items:center;gap:.75rem;padding:1rem;border-radius:14px;margin-bottom:1rem;
+  background:rgba(255,176,32,.08);border:1px solid rgba(255,176,32,.3)}
+.spin{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,176,32,.3);border-top-color:var(--owe);
+  animation:spin 1s linear infinite;flex:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.wait p{margin:0;font-size:.82rem;color:var(--owe);text-align:left}
+.pay-row{display:flex;flex-direction:column;gap:.5rem}
+.dots{display:flex;gap:.3rem;justify-content:center;margin-top:1.1rem}
+.dots i{width:5px;height:5px;border-radius:50%;background:rgba(246,246,247,.2)}
+.dots i.on{background:var(--red-hot)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.lock .num{filter:none;opacity:1}}
+</style>
+</head>
+<body>
+
+<div class="demo">
+  <em>Demo</em>
+  <button class="chip" data-scn="paid" aria-pressed="true">Booked · on a pass</button>
+  <button class="chip" data-scn="owes" aria-pressed="false">Booked · not paid</button>
+  <button class="chip" data-scn="new" aria-pressed="false">Not on the list</button>
+  <a class="chip chip--link" href="door.html">Front desk →</a>
+</div>
+
+<div class="stage">
+  <div class="phone"><div class="screen" id="screen">
+
+    <div class="brand">
+      <span class="mk">S<i>23</i></span>
+      <span class="sess">Mon 18:30<br>Circuits</span>
+    </div>
+
+    <!-- 0 · scan -->
+    <section class="pane on" id="p0">
+      <div class="mid">
+        <div class="qr">▦</div>
+        <span class="kick">You scanned the QR</span>
+        <h2>Check in</h2>
+        <p class="lede">Tap below, tell us who you are, and we'll give you your station.</p>
+      </div>
+      <button class="go" data-next="p1">Check in</button>
+    </section>
+
+    <!-- 1 · identify -->
+    <section class="pane" id="p1">
+      <span class="kick" style="margin-bottom:.7rem">Who are you?</span>
+      <input class="inp" id="q" placeholder="Start typing your name…" autocomplete="off">
+      <div class="hits" id="hits"></div>
+      <button class="go go--ghost" id="notMe" style="margin-top:auto">I'm not on the list</button>
+    </section>
+
+    <!-- 2 · locked -->
+    <section class="pane" id="p2">
+      <span class="kick" style="text-align:center">Almost there</span>
+      <h2 style="text-align:center;font-size:1.6rem;margin:.5rem 0 .2rem" id="oweName">Hiya Gary</h2>
+      <div class="lock" style="text-align:center" id="lock">
+        <div class="num" id="lockNum">7</div>
+        <div class="cap" id="lockCap">🔒 Station locked until you pay</div>
+      </div>
+      <div class="due"><b>£3.50</b><span>for tonight</span></div>
+      <div class="pay-row">
+        <button class="go" id="payCard">Pay by card</button>
+        <button class="go go--ghost" id="payCash">I'll pay cash at the desk</button>
+      </div>
+      <p class="note">Your spot is held while you pay. Pay with a pass next time and you skip this bit.</p>
+    </section>
+
+    <!-- 3 · cash waiting -->
+    <section class="pane" id="p3">
+      <span class="kick" style="text-align:center">Show this to Megan</span>
+      <h2 style="text-align:center;font-size:1.55rem;margin:.5rem 0 1rem" id="cashName">Gary Openshaw</h2>
+      <div class="wait"><span class="spin"></span><p><b style="font-weight:500">£3.50 cash</b> — hand it over at the desk and your station appears here.</p></div>
+      <div class="lock" style="text-align:center" id="lock2">
+        <div class="num" id="lockNum2">7</div>
+        <div class="cap">🔒 Unlocks the moment it's taken</div>
+      </div>
+      <button class="go go--in" id="megConfirm" style="margin-top:auto">Megan taps "cash received"</button>
+      <p class="note">In real life Megan taps once on the front desk — this button stands in for her.</p>
+    </section>
+
+    <!-- 4 · in -->
+    <section class="pane" id="p4">
+      <div class="mid">
+        <div class="tick">✓</div>
+        <span class="kick">You're in</span>
+        <div class="bignum" id="finalNum">7</div>
+        <span class="kick" style="letter-spacing:.3em">Station</span>
+        <p class="with" id="finalWith">With <b>Dave Ellison</b></p>
+      </div>
+      <p class="note" id="finalNote">Paid with your 20-class pass · 11 left</p>
+    </section>
+
+    <div class="dots" id="dots"><i class="on"></i><i></i><i></i></div>
+  </div></div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+
+const ROSTER=[
+  {name:'Sarah Whitfield',pass:'20-class',owes:0,with:'Dave Ellison',station:3},
+  {name:'Dave Ellison',pass:'20-class',owes:0,with:'Sarah Whitfield',station:3},
+  {name:'Priya Kaur',pass:'Weekly',owes:0,with:'Emma Doyle',station:5},
+  {name:'Gary Openshaw',pass:null,owes:3.5,with:null,station:7},
+  {name:'Bethany Clarke',pass:null,owes:3.5,with:'Marcus Bell',station:9},
+  {name:'Liam Braithwaite',pass:'Annual',owes:0,with:null,station:2},
+  {name:'Marcus Bell',pass:null,owes:3.5,with:'Bethany Clarke',station:9},
+];
+
+let scenario='paid', current=null;
+
+function show(id){
+  $$('.pane').forEach(p=>p.classList.remove('on'));
+  $('#'+id).classList.add('on');
+  $('#screen').classList.toggle('good', id==='p4');
+  const step = id==='p0'?0 : (id==='p1'?1 : (id==='p4'?2:1));
+  $$('#dots i').forEach((d,i)=>d.classList.toggle('on', i<=step));
+}
+
+/* scenario chips */
+$$('.chip[data-scn]').forEach(c=>c.addEventListener('click',()=>{
+  $$('.chip[data-scn]').forEach(x=>x.setAttribute('aria-pressed','false'));
+  c.setAttribute('aria-pressed','true');
+  scenario=c.dataset.scn; current=null;
+  $('#q').value=''; renderHits(); show('p0');
+}));
+
+$$('[data-next]').forEach(b=>b.addEventListener('click',()=>{
+  show(b.dataset.next);
+  if(b.dataset.next==='p1'){
+    // pre-fill so the demo moves fast
+    const seed = scenario==='paid'?'Sar':(scenario==='owes'?'Gar':'');
+    $('#q').value=seed; renderHits(); setTimeout(()=>$('#q').focus(),150);
+  }
+}));
+
+function renderHits(){
+  const q=$('#q').value.toLowerCase().trim();
+  const hits=q?ROSTER.filter(p=>p.name.toLowerCase().includes(q)):[];
+  $('#hits').innerHTML = hits.length ? hits.map(p=>
+    '<button class="hit" data-n="'+p.name+'"><span><b>'+p.name+'</b><span>'
+    +(p.pass?p.pass+' pass':'Pay as you go')+(p.with?' · with '+p.with.split(' ')[0]:'')
+    +'</span></span><span class="st '+(p.owes?'st--owe':'st--ok')+'">'+(p.owes?'£3.50 due':'Paid')+'</span></button>').join('')
+    : (q?'<p class="none">Nobody matching “'+q+'”.<br>Tap <b style="color:var(--bone);font-weight:500">I\'m not on the list</b> below.</p>':'');
+}
+$('#q').addEventListener('input',renderHits);
+
+$('#hits').addEventListener('click',e=>{
+  const b=e.target.closest('.hit'); if(!b) return;
+  current=ROSTER.find(p=>p.name===b.dataset.n);
+  if(current.owes>0) toLock(); else toDone('pass');
+});
+
+$('#notMe').addEventListener('click',()=>{
+  const typed=$('#q').value.trim();
+  current={name:typed||'Chris Hughes',pass:null,owes:3.5,with:null,station:11,walkin:true};
+  toLock();
+});
+
+function toLock(){
+  $('#oweName').textContent='Hiya '+current.name.split(' ')[0];
+  $('#lockNum').textContent=current.station;
+  $('#lock').classList.remove('open');
+  $('#lockCap').textContent='🔒 Station locked until you pay';
+  show('p2');
+}
+
+$('#payCard').addEventListener('click',()=>{
+  $('#payCard').textContent='Taking payment…';
+  setTimeout(()=>{
+    $('#lock').classList.add('open');
+    $('#lockCap').textContent='✓ Unlocked';
+    $('#payCard').textContent='Pay by card';
+    setTimeout(()=>toDone('card'),900);
+  },850);
+});
+
+$('#payCash').addEventListener('click',()=>{
+  $('#cashName').textContent=current.name;
+  $('#lockNum2').textContent=current.station;
+  $('#lock2').classList.remove('open');
+  show('p3');
+});
+
+$('#megConfirm').addEventListener('click',()=>{
+  $('#lock2').classList.add('open');
+  setTimeout(()=>toDone('cash'),800);
+});
+
+function toDone(how){
+  $('#finalNum').textContent=current.station;
+  $('#finalWith').innerHTML = current.with
+    ? 'Sharing station with <b>'+current.with+'</b>'
+    : 'You\'ve got the station to yourself';
+  $('#finalNote').textContent =
+    how==='pass' ? 'Paid with your '+current.pass+' pass · 11 left'
+    : how==='card' ? 'Paid £3.50 by card · receipt emailed'
+    : 'Paid £3.50 cash · Megan confirmed';
+  show('p4');
+}
+
+renderHits(); show('p0');
+</script>
+</body>
+</html>
