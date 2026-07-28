@@ -101,9 +101,20 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .lock .cap{font-size:.6rem;text-transform:uppercase;letter-spacing:.2em;color:var(--owe);font-weight:600;margin-top:.5rem}
 .lock.open{background:linear-gradient(160deg,rgba(61,220,151,.13),rgba(61,220,151,.03));border-color:rgba(61,220,151,.42)}
 .lock.open .cap{color:var(--in)}
-.due{display:flex;align-items:baseline;justify-content:center;gap:.5rem;margin-bottom:1rem}
-.due b{font-family:var(--f-d);font-weight:900;font-size:2.6rem;line-height:1;color:var(--bone)}
-.due span{font-size:.78rem;color:var(--dim)}
+/* pack chooser */
+.packs{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.9rem}
+.pack{display:flex;align-items:center;gap:.7rem;padding:.7rem .85rem;border-radius:13px;width:100%;text-align:left;
+  background:rgba(246,246,247,.04);border:1px solid var(--line-2);transition:all .18s}
+.pack:hover{border-color:rgba(246,246,247,.24)}
+.pack .rad{flex:none;width:18px;height:18px;border-radius:50%;border:1.5px solid rgba(246,246,247,.3);transition:all .2s}
+.pack b{font-weight:500;font-size:.94rem;display:block}
+.pack small{display:block;font-size:.7rem;color:var(--in);margin-top:.05rem}
+.pack .amt{margin-left:auto;font-family:var(--f-d);font-weight:900;font-size:1.25rem;letter-spacing:.02em}
+.pack[aria-pressed="true"]{background:rgba(232,38,43,.11);border-color:rgba(232,38,43,.5)}
+.pack[aria-pressed="true"] .rad{border-color:var(--red-hot);background:var(--red-hot);box-shadow:inset 0 0 0 3px var(--ink)}
+.bal{display:inline-flex;align-items:center;gap:.45rem;padding:.4rem .8rem;border-radius:20px;margin-top:.9rem;
+  background:rgba(61,220,151,.12);border:1px solid rgba(61,220,151,.36);font-size:.82rem;color:var(--in)}
+.bal b{font-family:var(--f-d);font-weight:900;font-size:1.05rem}
 
 /* result */
 .tick{width:60px;height:60px;border-radius:50%;background:rgba(61,220,151,.15);border:1px solid rgba(61,220,151,.5);
@@ -164,20 +175,21 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
       <button class="go go--ghost" id="notMe" style="margin-top:auto">I'm not on the list</button>
     </section>
 
-    <!-- 2 · locked -->
+    <!-- 2 · locked + choose -->
     <section class="pane" id="p2">
       <span class="kick" style="text-align:center">Almost there</span>
-      <h2 style="text-align:center;font-size:1.6rem;margin:.5rem 0 .2rem" id="oweName">Hiya Gary</h2>
+      <h2 style="text-align:center;font-size:1.5rem;margin:.45rem 0 .15rem" id="oweName">Hiya Gary</h2>
       <div class="lock" style="text-align:center" id="lock">
         <div class="num" id="lockNum">7</div>
         <div class="cap" id="lockCap">🔒 Station locked until you pay</div>
       </div>
-      <div class="due"><b>£3.50</b><span>for tonight</span></div>
+      <span class="kick" style="margin-bottom:.5rem">How many do you want?</span>
+      <div class="packs" id="packs"></div>
       <div class="pay-row">
         <button class="go" id="payCard">Pay by card</button>
-        <button class="go go--ghost" id="payCash">I'll pay cash at the desk</button>
+        <button class="go go--ghost" id="payCash">Pay cash at the desk</button>
       </div>
-      <p class="note">Your spot is held while you pay. Pay with a pass next time and you skip this bit.</p>
+      <p class="note">Your spot is held while you pay. Buy a few and you'll walk straight in next time.</p>
     </section>
 
     <!-- 3 · cash waiting -->
@@ -237,7 +249,7 @@ $$('.chip[data-scn]').forEach(c=>c.addEventListener('click',()=>{
   $$('.chip[data-scn]').forEach(x=>x.setAttribute('aria-pressed','false'));
   c.setAttribute('aria-pressed','true');
   scenario=c.dataset.scn; current=null;
-  $('#q').value=''; renderHits(); show('p0');
+  $('#q').value=''; renderHits(); renderPacks(); show('p0');
 }));
 
 $$('[data-next]').forEach(b=>b.addEventListener('click',()=>{
@@ -272,11 +284,32 @@ $('#notMe').addEventListener('click',()=>{
   toLock();
 });
 
+const PACKS=[
+  {id:1,n:1,label:'Tonight only',price:3.5,save:0},
+  {id:5,n:5,label:'5 classes',price:10,save:7.5},
+  {id:20,n:20,label:'20 classes',price:40,save:30},
+  {id:365,n:null,label:'Unlimited · a year',price:400,save:null},
+];
+let pack=PACKS[0];
+
+function renderPacks(){
+  $('#packs').innerHTML=PACKS.map(p=>
+    '<button class="pack" data-p="'+p.id+'" aria-pressed="'+(p.id===pack.id)+'">'
+    +'<span class="rad"></span>'
+    +'<span><b>'+p.label+'</b>'+(p.save?'<small>saves £'+p.save.toFixed(2)+'</small>':'')+'</span>'
+    +'<span class="amt">£'+(p.price%1?p.price.toFixed(2):p.price)+'</span></button>').join('');
+}
+$('#packs').addEventListener('click',e=>{
+  const b=e.target.closest('.pack'); if(!b) return;
+  pack=PACKS.find(p=>p.id===+b.dataset.p); renderPacks();
+});
+
 function toLock(){
   $('#oweName').textContent='Hiya '+current.name.split(' ')[0];
   $('#lockNum').textContent=current.station;
   $('#lock').classList.remove('open');
   $('#lockCap').textContent='🔒 Station locked until you pay';
+  pack=PACKS[0]; renderPacks();
   show('p2');
 }
 
@@ -292,6 +325,8 @@ $('#payCard').addEventListener('click',()=>{
 
 $('#payCash').addEventListener('click',()=>{
   $('#cashName').textContent=current.name;
+  const amt='£'+(pack.price%1?pack.price.toFixed(2):pack.price);
+  document.querySelector('#p3 .wait p').innerHTML='<b style="font-weight:500">'+amt+' cash</b> — hand it over at the desk and your station appears here.';
   $('#lockNum2').textContent=current.station;
   $('#lock2').classList.remove('open');
   show('p3');
@@ -307,14 +342,23 @@ function toDone(how){
   $('#finalWith').innerHTML = current.with
     ? 'Sharing station with <b>'+current.with+'</b>'
     : 'You\'ve got the station to yourself';
-  $('#finalNote').textContent =
-    how==='pass' ? 'Paid with your '+current.pass+' pass · 11 left'
-    : how==='card' ? 'Paid £3.50 by card · receipt emailed'
-    : 'Paid £3.50 cash · Megan confirmed';
+
+  let note='', bal='';
+  if(how==='pass'){
+    note='Paid with your '+current.pass+' pass';
+    bal='<b>11</b> classes left';
+  }else{
+    const paid = how==='card' ? 'by card' : 'cash · Megan confirmed';
+    note='Paid £'+(pack.price%1?pack.price.toFixed(2):pack.price)+' '+paid;
+    bal = pack.n===null ? '<b>Unlimited</b> until next July'
+        : (pack.n>1 ? '<b>'+(pack.n-1)+'</b> classes left after tonight'
+                    : 'Single class · nothing left over');
+  }
+  $('#finalNote').innerHTML = note + (bal?'<span class="bal">'+bal+'</span>':'');
   show('p4');
 }
 
-renderHits(); show('p0');
+renderHits(); renderPacks(); show('p0');
 </script>
 </body>
 </html>

@@ -179,6 +179,16 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .seg button[aria-pressed="true"]{background:linear-gradient(160deg,var(--red-hot),var(--red));border-color:rgba(255,255,255,.24);color:#fff}
 .muted{color:var(--dim);font-size:.79rem;margin:.9rem 0 0}
 
+/* ══ till ══ */
+.packs{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.9rem}
+.packbtn{display:flex;align-items:center;gap:.7rem;padding:.75rem .9rem;border-radius:12px;width:100%;text-align:left;
+  background:rgba(246,246,247,.04);border:1px solid var(--line-2);transition:all .18s}
+.packbtn:hover{border-color:rgba(246,246,247,.26)}
+.packbtn b{font-weight:500;font-size:.96rem;display:block}
+.packbtn small{display:block;font-size:.7rem;color:var(--in);margin-top:.05rem}
+.packbtn .amt{margin-left:auto;font-family:var(--f-d);font-weight:900;font-size:1.3rem}
+.packbtn[aria-pressed="true"]{background:rgba(232,38,43,.12);border-color:rgba(232,38,43,.55)}
+
 /* ══ member phone ══ */
 .phone{width:300px;margin:0 auto;border-radius:36px;padding:12px;background:linear-gradient(160deg,#232329,#0b0b0d);
   border:1px solid rgba(246,246,247,.16);box-shadow:0 40px 80px -30px rgba(0,0,0,1)}
@@ -276,6 +286,17 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   </div></div>
 </div></div>
 
+<div class="ov" id="ovTill"><div class="sheet" style="max-width:470px">
+  <div class="sh"><div><h2 id="tillName">—</h2><p id="tillHint">Not paid for tonight yet.</p></div><button class="x" data-close>×</button></div>
+  <div class="packs" id="packs"></div>
+  <div class="seg" style="margin-bottom:.5rem">
+    <button id="tillCash" class="b b--go" style="width:100%">Cash received</button>
+    <button id="tillCard" class="b" style="width:100%">Paid by card</button>
+  </div>
+  <button class="b" id="tillOwe" style="width:100%">Let them in — mark as owing</button>
+  <p class="muted">Cash is recorded, not processed. Credits carry over to their next visit.</p>
+</div></div>
+
 <div class="ov" id="ovAdd"><div class="sheet" style="max-width:500px">
   <div class="sh"><div><h2>Walk-in</h2><p>Not booked on — add them and give them a station</p></div><button class="x" data-close>×</button></div>
   <label class="field"><span>Name</span><input id="wName" placeholder="e.g. Chris Hughes" autocomplete="off"></label>
@@ -315,10 +336,21 @@ let people=[
   ['Amy Rigby','20-class',0,'Holly Nuttall'],
   ['Danny Fairhurst','Annual',0,null],
   ['Rachel Moorcroft','Weekly',0,null],
-].map((p,i)=>({id:i+1,name:p[0],pass:p[1],owes:p[2],partner:p[3],station:null,in:false,walkin:false,paid:false}));
+].map((p,i)=>({id:i+1,name:p[0],pass:p[1],owes:p[2],partner:p[3],station:null,in:false,walkin:false,paid:false,
+  credits:p[1]==='20-class'?[11,7,4,9,6,12][i%6]:(p[1]==='Weekly'?[3,2,4][i%3]:0),
+  weekSpend:p[1]?0:[3.5,7,10.5,0][i%4]}));
+
+/* what Megan can sell at the desk */
+const PACKS=[
+  {id:1,n:1,label:'Tonight only',price:3.5,save:0},
+  {id:5,n:5,label:'5 classes',price:10,save:7.5},
+  {id:20,n:20,label:'20 classes',price:40,save:30},
+  {id:365,n:null,label:'Unlimited year',price:400,save:null},
+];
+let pending=null, chosen=PACKS[0];
 
 let stations=Array.from({length:NSTATIONS},(_,i)=>({n:i+1,ex:EX[i],places:[null,null],held:[null,null]}));
-let cash=0, lastIn=null;
+let cash=0, lastIn=null, takings={cash:0,card:0};
 
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const initials=n=>n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
@@ -362,7 +394,8 @@ function checkIn(p){
   if(!slot){ alert('Floor is full — all '+PLACES+' places taken.'); return; }
   const [s,i]=slot;
   s.places[i]=p.name; p.station=s.n; p.in=true; lastIn=p;
-  if(p.owes>0&&!p.paid){ p.paid=true; cash+=p.owes; }
+  if(p.owes>0&&!p.paid){ p.paid=true; cash+=p.owes; takings.cash+=p.owes; }
+  else if(p.credits>0&&p.credits<999&&!p.spent){ p.credits-=1; p.spent=true; }
   render();
   const cell=document.querySelector('[data-st="'+s.n+'"]');
   if(cell){ cell.classList.add('flash'); setTimeout(()=>cell.classList.remove('flash'),700); }
@@ -383,9 +416,12 @@ function render(){
   $('#list').innerHTML=shown.map(p=>{
     const tag=p.in?'<span class="tag tag--st">'+p.station+'</span>'
       :(p.owes>0?'<span class="tag tag--owe">£'+p.owes.toFixed(2)+'</span>'
-                :'<span class="tag tag--pass">'+p.pass+'</span>');
-    const meta=p.in?'<span style="color:var(--in)">Checked in</span>'
-      :(p.partner?'Booked · with '+first(p.partner):(p.walkin?'Walk-in':'Booked on'));
+                :'<span class="tag tag--pass">'+(p.credits?p.credits+' left':p.pass)+'</span>');
+    let meta;
+    if(p.in) meta='<span style="color:var(--in)">Checked in'+(p.credits?' · '+p.credits+' left':'')+'</span>';
+    else if(p.debt) meta='<span style="color:var(--owe)">Owes £'+p.debt.toFixed(2)+'</span>';
+    else if(p.owes>0&&p.weekSpend>=7) meta='<span style="color:var(--owe)">£'+p.weekSpend.toFixed(2)+' this week — offer 5 for £10</span>';
+    else meta=p.partner?'Booked · with '+first(p.partner):(p.walkin?'Walk-in':'Booked on');
     return '<button class="p '+(p.in?'done':'')+'" data-id="'+p.id+'">'
       +'<span class="av">'+(p.in?'✓':initials(p.name))+'</span>'
       +'<span class="pi"><span class="pn">'+p.name+'</span><span class="pm">'+meta+'</span></span>'+tag+'</button>';
@@ -414,7 +450,49 @@ function render(){
   $('#floorMeta').textContent=stations.reduce((t,s)=>t+s.places.filter(Boolean).length,0)+' of '+PLACES+' places';
 }
 
-$('#list').addEventListener('click',e=>{const b=e.target.closest('.p');if(b)checkIn(people.find(p=>p.id===+b.dataset.id))});
+$('#list').addEventListener('click',e=>{
+  const b=e.target.closest('.p'); if(!b) return;
+  const p=people.find(x=>x.id===+b.dataset.id);
+  if(!p.in && p.owes>0 && !p.paid) openTill(p); else checkIn(p);
+});
+
+/* ── till: sell one or several classes, cash or card ── */
+function openTill(p){
+  pending=p; chosen=PACKS[0];
+  $('#tillName').textContent=p.name;
+  $('#tillHint').textContent = p.weekSpend>=7
+    ? 'Paid £'+p.weekSpend.toFixed(2)+' this week already — 5 for £10 would save them money.'
+    : 'Not paid for tonight yet.';
+  $('#tillHint').style.color = p.weekSpend>=7 ? 'var(--owe)' : 'var(--dim)';
+  renderPacks(); open('#ovTill');
+}
+function renderPacks(){
+  $('#packs').innerHTML=PACKS.map(k=>
+    '<button class="packbtn" data-p="'+k.id+'" aria-pressed="'+(k.id===chosen.id)+'">'
+    +'<span><b>'+k.label+'</b>'+(k.save?'<small>saves £'+k.save.toFixed(2)+'</small>':'')+'</span>'
+    +'<span class="amt">£'+(k.price%1?k.price.toFixed(2):k.price)+'</span></button>').join('');
+}
+$('#packs').addEventListener('click',e=>{
+  const b=e.target.closest('.packbtn'); if(!b) return;
+  chosen=PACKS.find(k=>k.id===+b.dataset.p); renderPacks();
+});
+function settle(method){
+  const p=pending; if(!p) return;
+  p.paid=true; p.owes=0; p.debt=0;
+  if(method==='cash') cash+=chosen.price;
+  takings[method]+=chosen.price;
+  /* add the credits only — checkIn() spends tonight's one, so don't deduct twice */
+  p.credits=(chosen.n===null?999:(p.credits||0)+chosen.n);
+  p.pass=chosen.n===null?'Unlimited':(chosen.n>1?'Credits':null);
+  $('#ovTill').classList.remove('show'); pending=null; checkIn(p);
+}
+$('#tillCash').addEventListener('click',()=>settle('cash'));
+$('#tillCard').addEventListener('click',()=>settle('card'));
+$('#tillOwe').addEventListener('click',()=>{
+  const p=pending; if(!p) return;
+  p.debt=3.5; p.owes=0; p.paid=false;
+  $('#ovTill').classList.remove('show'); pending=null; checkIn(p);
+});
 $('#q').addEventListener('input',render);
 const open=id=>$(id).classList.add('show');
 $$('[data-close]').forEach(b=>b.addEventListener('click',()=>$$('.ov').forEach(o=>o.classList.remove('show'))));
@@ -433,10 +511,12 @@ $('#ownerBtn').addEventListener('click',()=>{
   const owed=people.filter(p=>p.owes>0&&!p.paid).reduce((t,p)=>t+p.owes,0);
   $('#kIn').textContent=inP.length; $('#kNo').textContent=no.length;
   $('#kWalk').textContent=people.filter(p=>p.walkin).length; $('#kCash').textContent='£'+cash.toFixed(2);
+  const debtors=people.filter(p=>p.debt>0);
   $('#ownerRows').innerHTML=[
-    ['On a pass or membership',people.filter(p=>p.pass&&p.in).length+' people','No payment needed'],
-    ['Paid cash tonight','£'+cash.toFixed(2),'No card fee'],
-    ['Still to pay','£'+owed.toFixed(2),owed>0?'Chase at the door':'All settled'],
+    ['On credits or a membership',people.filter(p=>p.pass&&p.in).length+' people','No payment needed'],
+    ['Cash taken','£'+takings.cash.toFixed(2),'No card fee on any of it'],
+    ['Card taken','£'+takings.card.toFixed(2),takings.card?'Fees only on this':'—'],
+    ['Let in owing',debtors.length?debtors.map(d=>first(d.name)).join(', '):'Nobody','£'+debtors.reduce((t,d)=>t+d.debt,0).toFixed(2)+' to chase'],
     ['No-shows',no.length+' people','Booked, never arrived'],
   ].map(r=>'<div class="row"><b style="font-weight:500">'+r[0]+'</b><span style="color:var(--dim);font-size:.79rem">'+r[2]+'</span><span class="m">'+r[1]+'</span></div>').join('');
   open('#ovOwner');
