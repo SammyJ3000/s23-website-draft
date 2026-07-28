@@ -114,11 +114,12 @@ img{display:block;max-width:100%}
 @media(min-width:900px){.hero-note{white-space:nowrap}}
 
 /* word-by-word rise */
-.rise-w{display:inline-block;overflow:hidden;vertical-align:bottom}
-.rise-w>span{display:inline-block;transform:translateY(105%);opacity:0;
+.rise-w{display:inline-block;overflow:hidden;vertical-align:bottom;
+  padding:.1em 0 .18em;margin:-.1em 0 -.18em}
+.js .rise-w>span{display:inline-block;transform:translateY(105%);opacity:0;
   animation:wordUp .9s var(--ease) forwards;animation-delay:calc(var(--w,0)*70ms + 150ms)}
 @keyframes wordUp{to{transform:none;opacity:1}}
-.fade-up{opacity:0;transform:translateY(18px);animation:fadeUp .9s var(--ease) forwards;
+.js .fade-up{opacity:0;transform:translateY(18px);animation:fadeUp .9s var(--ease) forwards;
   animation-delay:calc(var(--w,0)*90ms + 500ms)}
 @keyframes fadeUp{to{opacity:1;transform:none}}
 
@@ -149,13 +150,13 @@ section{padding:clamp(4.5rem,10vw,8.5rem) 0;position:relative}
 .stars{color:var(--red-hot);font-size:1.1rem;letter-spacing:.15em;margin-top:.4rem}
 
 /* ── reveal ── */
-.rev{opacity:0;transform:translateY(30px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
-.rev.in{opacity:1;transform:none}
-.wipe{clip-path:inset(0 100% 0 0);transition:clip-path 1.15s var(--ease)}
-.wipe.in{clip-path:inset(0 0 0 0)}
-.mask{display:block;overflow:hidden}
-.mask>span{display:block;transform:translateY(102%);transition:transform 1s var(--ease)}
-.mask.in>span{transform:none}
+.js .rev{opacity:0;transform:translateY(30px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.js .rev.in{opacity:1;transform:none}
+.js .wipe{clip-path:inset(0 100% 0 0);transition:clip-path 1.15s var(--ease)}
+.js .wipe.in{clip-path:inset(0 0 0 0)}
+.mask{display:block;overflow:hidden;padding:.1em 0 .18em;margin:-.1em 0 -.18em}
+.js .mask>span{display:block;transform:translateY(102%);transition:transform 1s var(--ease)}
+.js .mask.in>span{transform:none}
 
 /* ── editorial pair ── */
 .ed{display:grid;gap:clamp(1.2rem,2.4vw,2rem);grid-template-columns:1fr}
@@ -315,6 +316,7 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
 </style>
 </head>
 <body>
+<script>document.documentElement.classList.add('js')</script>
 <div class="bg" aria-hidden="true"></div>
 
 <header class="nav">
@@ -371,9 +373,9 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
   <section style="padding-block:clamp(3rem,6vw,4.5rem)">
     <div class="wrap">
       <div class="proof rev">
-        <div class="pf"><b class="chrome"><span class="count" data-to="2014" data-plain="1">2014</span></b><span>Training since</span></div>
-        <div class="pf"><b class="chrome"><span class="count" data-to="100">0</span>+</b><span>Through the door nightly</span></div>
-        <div class="pf"><b class="chrome"><span class="count" data-to="12">0</span></b><span>Years on Southworth Road</span></div>
+        <div class="pf"><b><span class="chrome count" data-to="2014" data-plain="1">2014</span></b><span>Training since</span></div>
+        <div class="pf"><b><span class="chrome count" data-to="100">0</span><span class="chrome">+</span></b><span>Through the door nightly</span></div>
+        <div class="pf"><b><span class="chrome count" data-to="12">0</span></b><span>Years on Southworth Road</span></div>
         <!-- PLACEHOLDER: replace 4.9 with S23's real Google rating before this goes live -->
         <div class="pf"><b class="chrome">4.9</b><div class="stars">★★★★★</div><span>Rated on Google</span></div>
       </div>
@@ -642,6 +644,11 @@ if (!reduced) {
 } else {
   document.querySelectorAll('.rev, .wipe, .mask').forEach(el => el.classList.add('in'));
 }
+
+/* safety net: nothing stays invisible if an observer misses */
+setTimeout(() => {
+  document.querySelectorAll('.rev:not(.in), .wipe:not(.in), .mask:not(.in)').forEach(el => el.classList.add('in'));
+}, 3500);
 
 /* ── counters ── */
 const counters = document.querySelectorAll('.count');
