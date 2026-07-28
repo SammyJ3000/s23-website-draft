@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>S23 Lifestyle — Circuit Training, Newton-le-Willows</title>
-<meta name="description" content="Circuit training in Newton-le-Willows since 2014. Forty-five seconds on, fifteen off, every station. Book and pay in under a minute — no account needed.">
+<meta name="description" content="Circuit training in Newton-le-Willows since 2014. Forty-five seconds on, fifteen off, every station. See the timetable and prices without signing up, and book in under a minute.">
 <!-- Draft/demo only — keep out of search results so it never competes with the live S23 site -->
 <meta name="robots" content="noindex, nofollow">
 
@@ -275,6 +275,8 @@ tbody tr:last-child td{border-bottom:0}
 .embed-live{background:#fff;color:#111;min-height:520px;padding:clamp(.5rem,1.5vw,1rem)}
 .embed-live:empty{display:none}
 .embed-ph{min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;text-align:center;padding:2rem;border:1px dashed rgba(246,246,247,.22);color:var(--dim)}
+/* class selectors beat the UA [hidden] rule — force it back */
+[hidden]{display:none !important}
 .embed-ph b{font-family:var(--f-display);font-weight:800;font-size:1.7rem;color:var(--bone);letter-spacing:.05em;text-transform:uppercase}
 .embed-ph p{max-width:44ch;margin:0;font-size:.92rem}
 .embed-ph code{background:rgba(232,38,43,.16);color:#ff8c8f;padding:.2rem .5rem;font-size:.85rem;font-family:ui-monospace,monospace}
@@ -340,7 +342,7 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 2.6rem;background:rgb
             <a class="btn" href="#book">Book tonight's class</a>
             <a class="btn btn--ghost" href="#timetable">See the timetable</a>
           </div>
-          <p class="hero-note"><b>No account. No password.</b> Booked and paid in under a minute.</p>
+          <p class="hero-note"><b>Timetable and prices open to everyone.</b> Booked and paid in under a minute.</p>
         </div>
       </div>
     </div>
@@ -442,7 +444,7 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 2.6rem;background:rgb
           <span class="price-name">Drop-in</span>
           <span class="price-fig chrome">£3.50</span>
           <span class="price-per">One class</span>
-          <ul><li>Any session, any night</li><li>Pay on your phone</li><li>No account needed</li></ul>
+          <ul><li>Any session, any night</li><li>Pay on your phone</li><li>Sorted in under a minute</li></ul>
           <a class="btn btn--ghost" href="#book">Book one</a>
         </article>
         <article class="price rise">
