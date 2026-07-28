@@ -543,17 +543,39 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 2.6rem;background:rgb
 <script>
 document.getElementById('yr').textContent = new Date().getFullYear();
 
-/* If the embed hasn't rendered in 6s (wrong domain, no HTTPS, blocked),
-   show the fallback rather than a blank white box — matters live in front of a client. */
-setTimeout(() => {
+/* Show a clean fallback instead of Gymcatch's raw error panel.
+   The widget needs https on a domain registered in the portal — opened
+   as a local file it always fails, and a red error box mid-demo is worse
+   than a plain explanation. */
+(function () {
   const host = document.getElementById('gc-embed');
-  const el = host && host.querySelector('gymcatch-embedded');
-  if (!el || el.getBoundingClientRect().height < 60) {
-    if (host) host.hidden = true;
-    const fb = document.getElementById('gc-fallback');
-    if (fb) fb.hidden = false;
+  const fb = document.getElementById('gc-fallback');
+  if (!host || !fb) return;
+
+  const isLocal = location.protocol !== 'https:' &&
+                  !['localhost', '127.0.0.1'].includes(location.hostname);
+
+  const showFallback = (why) => {
+    host.hidden = true;
+    fb.hidden = false;
+    const p = fb.querySelector('p');
+    if (p && why) p.textContent = why;
+  };
+
+  if (isLocal) {
+    showFallback('This page is open as a local file. The booking widget only runs over https on a registered domain — view the deployed site instead.');
+    return;
   }
-}, 6000);
+
+  setTimeout(() => {
+    const el = host.querySelector('gymcatch-embedded');
+    const txt = (host.textContent || '').toLowerCase();
+    const errored = txt.includes('error') || txt.includes('only available');
+    if (!el || errored || host.getBoundingClientRect().height < 80) {
+      showFallback('Booking is being connected. In the meantime, sessions can be booked directly through Gymcatch.');
+    }
+  }, 6000);
+})();
 
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
