@@ -179,6 +179,69 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .seg button[aria-pressed="true"]{background:linear-gradient(160deg,var(--red-hot),var(--red));border-color:rgba(255,255,255,.24);color:#fff}
 .muted{color:var(--dim);font-size:.79rem;margin:.9rem 0 0}
 
+/* ══ tabs ══ */
+.tabs{display:flex;gap:.35rem;padding:.55rem clamp(.9rem,2vw,1.5rem);flex:none;
+  border-bottom:1px solid var(--line-2);background:rgba(8,8,10,.6)}
+.tab{font-family:var(--f-d);font-weight:800;text-transform:uppercase;font-size:.95rem;letter-spacing:.09em;
+  padding:.6rem 1.3rem;border-radius:11px;color:var(--dim);border:1px solid transparent;transition:all .2s}
+.tab:hover{color:var(--bone)}
+.tab.on{color:var(--bone);background:rgba(246,246,247,.07);border-color:var(--line)}
+
+/* ══ people ══ */
+.people{flex:1;display:flex;flex-direction:column;min-height:0}
+.psearch{padding:.75rem;flex:none;border-bottom:1px solid var(--line-2);display:flex;flex-direction:column;gap:.6rem}
+.psearch input{width:100%;padding:.9rem 1rem;border-radius:var(--r);border:1px solid var(--line);
+  background:var(--ink-3);color:var(--bone);font-family:inherit;font-size:1rem;font-weight:300}
+.psearch input:focus{outline:none;border-color:rgba(232,38,43,.6);background:var(--ink-4)}
+.chips{display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;font-size:.76rem;font-weight:500;padding:.5rem .9rem;border-radius:20px;
+  border:1px solid var(--line);color:var(--dim);background:rgba(246,246,247,.03);transition:all .2s}
+.chip:hover{color:var(--bone)}
+.chip.on{background:linear-gradient(160deg,var(--red-hot),var(--red));color:#fff;border-color:rgba(255,255,255,.22)}
+.plist{flex:1;overflow-y:auto;min-height:0;padding:.5rem;display:flex;flex-direction:column;gap:.4rem}
+.prow{display:flex;align-items:center;gap:.85rem;padding:.8rem .9rem;border-radius:var(--r);width:100%;text-align:left;
+  background:linear-gradient(160deg,rgba(246,246,247,.055),rgba(246,246,247,.015));border:1px solid var(--line-2);
+  transition:transform .18s cubic-bezier(.2,.9,.3,1),border-color .18s}
+.prow:hover{border-color:rgba(246,246,247,.24);transform:translateX(2px)}
+.prow .av{width:42px;height:42px;font-size:1.05rem}
+.pmain{flex:1;min-width:0}
+.pname{font-weight:500;font-size:1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.psub{font-size:.76rem;color:var(--dim);margin-top:.1rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pstat{flex:none;text-align:right}
+.pstat b{display:block;font-family:var(--f-d);font-weight:800;font-size:1.1rem;letter-spacing:.03em}
+.pstat span{display:block;font-size:.58rem;text-transform:uppercase;letter-spacing:.14em;color:var(--dim);margin-top:.15rem}
+.amber{color:var(--owe)} .green{color:var(--in)}
+.money{flex:none;display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-2);
+  border-top:1px solid var(--line-2)}
+.money>div{background:rgba(8,8,10,.85);padding:.9rem .5rem;text-align:center}
+.money b{display:block;font-family:var(--f-d);font-weight:900;font-size:1.5rem;line-height:1}
+.money span{display:block;font-size:.56rem;text-transform:uppercase;letter-spacing:.18em;color:var(--dim);margin-top:.25rem;font-weight:500}
+
+/* ══ slide-over ══ */
+.sheetover{position:fixed;inset:0;z-index:90}
+.so-back{position:absolute;inset:0;background:rgba(4,4,5,.72);backdrop-filter:blur(10px);
+  animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.so{position:absolute;top:0;right:0;bottom:0;width:min(100%,430px);display:flex;flex-direction:column;
+  background:linear-gradient(200deg,rgba(24,24,28,.99),rgba(10,10,12,.99));border-left:1px solid var(--line);
+  box-shadow:-30px 0 80px -30px rgba(0,0,0,1);animation:slideIn .32s cubic-bezier(.2,.9,.3,1)}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:none}}
+.so-h{display:flex;align-items:center;gap:.9rem;padding:1.2rem 1.1rem;border-bottom:1px solid var(--line-2);flex:none}
+.so-av{flex:none;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-family:var(--f-d);
+  font-weight:800;font-size:1.25rem;background:linear-gradient(160deg,#2a2a30,#17171b);border:1px solid var(--line)}
+.so-h h2{font-size:1.35rem;letter-spacing:.03em}
+.so-h p{margin:.2rem 0 0;font-size:.78rem;color:var(--dim)}
+.so-body{flex:1;overflow-y:auto;padding:1.1rem;display:flex;flex-direction:column;gap:.5rem;min-height:0}
+.fact{display:flex;align-items:center;gap:.8rem;padding:.85rem .95rem;border-radius:12px;
+  background:rgba(246,246,247,.04);border:1px solid var(--line-2);font-size:.9rem}
+.fact span{color:var(--dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;font-weight:600}
+.fact b{margin-left:auto;font-weight:500;text-align:right}
+.fact a{margin-left:auto;font-weight:500;color:var(--in);text-decoration:none}
+.so-sub{font-size:.62rem;text-transform:uppercase;letter-spacing:.2em;color:var(--dim);font-weight:600;margin:.9rem 0 .1rem}
+.so-act{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:.5rem;padding:.9rem 1.1rem;
+  border-top:1px solid var(--line-2);padding-bottom:max(.9rem,env(safe-area-inset-bottom))}
+
 /* ══ till ══ */
 .packs{display:flex;flex-direction:column;gap:.4rem;margin-bottom:.9rem}
 .packbtn{display:flex;align-items:center;gap:.7rem;padding:.75rem .9rem;border-radius:12px;width:100%;text-align:left;
@@ -228,7 +291,12 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
     <span class="clock" id="clock">18:24</span>
   </header>
 
-  <div class="main">
+  <div class="tabs" role="tablist">
+    <button class="tab on" id="tabTonight" role="tab" aria-selected="true">Tonight</button>
+    <button class="tab" id="tabPeople" role="tab" aria-selected="false">People</button>
+  </div>
+
+  <div class="main" id="viewTonight">
     <aside class="roster">
       <div class="search"><input id="q" type="search" placeholder="Search name…" autocomplete="off" aria-label="Search"></div>
       <div class="list" id="list"></div>
@@ -238,6 +306,24 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
       <div class="grid" id="grid"></div>
     </section>
   </div>
+
+  <section class="people" id="viewPeople" hidden>
+    <div class="psearch">
+      <input id="pq" type="search" placeholder="Search name or number…" autocomplete="off" aria-label="Search people">
+      <div class="chips">
+        <button class="chip on" data-f="all">Everyone</button>
+        <button class="chip" data-f="owes">Owes money</button>
+        <button class="chip" data-f="walkin">Walk-ins</button>
+        <button class="chip" data-f="lapsed">Not been in</button>
+      </div>
+    </div>
+    <div class="plist" id="plist"></div>
+    <div class="money">
+      <div><b id="mCash">£0</b><span>Cash</span></div>
+      <div><b id="mCard">£0</b><span>Card</span></div>
+      <div><b id="mOwed" class="amber">£0</b><span>Owed</span></div>
+    </div>
+  </section>
 
   <nav class="bar">
     <button class="b b--go" id="addBtn">+ Walk-in</button>
@@ -251,6 +337,22 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 <div class="toast" id="toast">
   <b id="toastN">7</b>
   <div><div class="tt">Checked in · station</div><div class="tn" id="toastName">—</div></div>
+</div>
+
+<div class="sheetover" id="ovPerson" hidden>
+  <div class="so-back" data-pclose></div>
+  <aside class="so" role="dialog" aria-modal="true" aria-labelledby="soName">
+    <header class="so-h">
+      <span class="so-av" id="soAv">SW</span>
+      <div><h2 id="soName">—</h2><p id="soType">—</p></div>
+      <button class="x" data-pclose aria-label="Close">×</button>
+    </header>
+    <div class="so-body" id="soBody"></div>
+    <div class="so-act">
+      <button class="b b--go" id="soCredits">Add classes</button>
+      <button class="b" id="soPaid">Mark paid</button>
+    </div>
+  </aside>
 </div>
 
 <div class="ov" id="ovFire"><div class="sheet">
@@ -337,6 +439,13 @@ let people=[
   ['Danny Fairhurst','Annual',0,null],
   ['Rachel Moorcroft','Weekly',0,null],
 ].map((p,i)=>({id:i+1,name:p[0],pass:p[1],owes:p[2],partner:p[3],station:null,in:false,walkin:false,paid:false,
+  phone:'07700 900'+String(100+i*17).slice(-3),
+  email:p[0].toLowerCase().replace(/[^a-z]+/g,'.')+'@example.com',
+  member:!!p[1],
+  renew:p[1]==='20-class'||p[1]==='Annual',
+  lastIn:['Tonight','Yesterday','2 days ago','4 days ago','Last week','6 weeks ago'][i%6],
+  visits:[18,24,9,31,12,6,27,15][i%8],
+  lifetime:[240,480,90,400,160,42,320,180][i%8],
   credits:p[1]==='20-class'?[11,7,4,9,6,12][i%6]:(p[1]==='Weekly'?[3,2,4][i%3]:0),
   weekSpend:p[1]?0:[3.5,7,10.5,0][i%4]}));
 
@@ -497,7 +606,7 @@ $('#q').addEventListener('input',render);
 const open=id=>$(id).classList.add('show');
 $$('[data-close]').forEach(b=>b.addEventListener('click',()=>$$('.ov').forEach(o=>o.classList.remove('show'))));
 $$('.ov').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('show')}));
-document.addEventListener('keydown',e=>{if(e.key==='Escape')$$('.ov').forEach(o=>o.classList.remove('show'))});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){$$('.ov').forEach(o=>o.classList.remove('show'));closePerson();}});
 
 $('#fireBtn').addEventListener('click',()=>{
   const used=stations.filter(s=>s.places.some(Boolean));
@@ -540,6 +649,102 @@ $('#wGo').addEventListener('click',()=>{
   const p={id:Date.now(),name,pass:null,owes:payCash?3.5:0,partner:$('#wPair').value.trim()||null,station:null,in:false,walkin:true,paid:!payCash};
   people.push(p); $('#ovAdd').classList.remove('show'); checkIn(p);
 });
+/* ══════════ PEOPLE TAB ══════════ */
+let filter='all', openPerson=null;
+
+function switchTab(which){
+  const on = which==='people';
+  $('#viewTonight').hidden = on;
+  $('#viewPeople').hidden = !on;
+  $('#tabPeople').classList.toggle('on', on);
+  $('#tabTonight').classList.toggle('on', !on);
+  $('#tabPeople').setAttribute('aria-selected', on);
+  $('#tabTonight').setAttribute('aria-selected', !on);
+  if(on) renderPeople();
+}
+$('#tabTonight').addEventListener('click',()=>switchTab('tonight'));
+$('#tabPeople').addEventListener('click',()=>switchTab('people'));
+
+$$('.chip').forEach(c=>c.addEventListener('click',()=>{
+  $$('.chip').forEach(x=>x.classList.remove('on'));
+  c.classList.add('on'); filter=c.dataset.f; renderPeople();
+}));
+$('#pq').addEventListener('input',renderPeople);
+
+function balanceOf(p){
+  if(p.pass==='Annual'||p.credits>=999) return {txt:'Unlimited', sub:'Member', cls:'green'};
+  if(p.debt>0)                          return {txt:'£'+p.debt.toFixed(2), sub:'Owes', cls:'amber'};
+  if(p.owes>0&&!p.paid)                 return {txt:'£'+p.owes.toFixed(2), sub:'To pay', cls:'amber'};
+  if(p.credits>0)                       return {txt:p.credits, sub:'Left', cls:''};
+  return {txt:'—', sub:'No classes', cls:''};
+}
+
+function renderPeople(){
+  const q=$('#pq').value.toLowerCase().trim();
+  const rows=people.filter(p=>{
+    if(q && !(p.name.toLowerCase().includes(q) || (p.phone||'').includes(q))) return false;
+    if(filter==='owes')   return (p.debt>0) || (p.owes>0 && !p.paid);
+    if(filter==='walkin') return !p.member;
+    if(filter==='lapsed') return /week/.test(p.lastIn||'');
+    return true;
+  });
+
+  $('#plist').innerHTML = rows.map(p=>{
+    const b=balanceOf(p);
+    return '<button class="prow" data-pid="'+p.id+'">'
+      +'<span class="av">'+initials(p.name)+'</span>'
+      +'<span class="pmain"><span class="pname">'+p.name+'</span>'
+      +'<span class="psub">'+(p.member?'Member':'Walk-in')+' · '+p.phone+'</span></span>'
+      +'<span class="pstat"><b class="'+b.cls+'">'+b.txt+'</b><span>'+b.sub+'</span></span></button>';
+  }).join('') || '<p style="color:var(--dim);text-align:center;padding:2.5rem 1rem;font-size:.9rem">Nobody matches that.</p>';
+
+  const owed=people.reduce((t,p)=>t+(p.debt||0)+((p.owes>0&&!p.paid)?p.owes:0),0);
+  $('#mCash').textContent='£'+takings.cash.toFixed(0);
+  $('#mCard').textContent='£'+takings.card.toFixed(0);
+  $('#mOwed').textContent='£'+owed.toFixed(2);
+}
+
+$('#plist').addEventListener('click',e=>{
+  const b=e.target.closest('.prow'); if(!b) return;
+  showPerson(people.find(p=>p.id===+b.dataset.pid));
+});
+
+function showPerson(p){
+  openPerson=p;
+  const b=balanceOf(p);
+  $('#soAv').textContent=initials(p.name);
+  $('#soName').textContent=p.name;
+  $('#soType').textContent=(p.member?'Member':'Walk-in')+' · last in '+(p.lastIn||'—').toLowerCase();
+  $('#soBody').innerHTML=
+     '<div class="so-sub">Contact</div>'
+    +'<div class="fact"><span>Mobile</span><a href="tel:'+p.phone.replace(/\s/g,'')+'">'+p.phone+'</a></div>'
+    +'<div class="fact"><span>Email</span><b style="font-weight:400;font-size:.82rem">'+p.email+'</b></div>'
+    +'<div class="so-sub">Classes</div>'
+    +'<div class="fact"><span>Balance</span><b class="'+b.cls+'">'+b.txt+' '+b.sub.toLowerCase()+'</b></div>'
+    +'<div class="fact"><span>Auto renew</span><b class="'+(p.renew?'green':'')+'">'+(p.renew?'On':'Off')+'</b></div>'
+    +'<div class="fact"><span>Visits · 12wk</span><b>'+p.visits+'</b></div>'
+    +(p.partner?'<div class="fact"><span>Trains with</span><b>'+p.partner+'</b></div>':'')
+    +'<div class="so-sub">Money</div>'
+    +'<div class="fact"><span>Spent</span><b>£'+p.lifetime+'</b></div>'
+    +'<div class="fact"><span>Last paid</span><b>'+(p.member?'Card · online':'Cash · at the desk')+'</b></div>'
+    +((p.debt>0)?'<div class="fact" style="border-color:rgba(255,176,32,.4)"><span>Owes</span><b class="amber">£'+p.debt.toFixed(2)+'</b></div>':'');
+  $('#ovPerson').hidden=false;
+}
+function closePerson(){ $('#ovPerson').hidden=true; openPerson=null; }
+$$('[data-pclose]').forEach(el=>el.addEventListener('click',closePerson));
+$('#soPaid').addEventListener('click',()=>{
+  if(!openPerson) return;
+  if(openPerson.debt>0){ cash+=openPerson.debt; takings.cash+=openPerson.debt; openPerson.debt=0; }
+  openPerson.paid=true; openPerson.owes=0;
+  closePerson(); renderPeople(); render();
+});
+$('#soCredits').addEventListener('click',()=>{
+  if(!openPerson) return;
+  openPerson.credits=(openPerson.credits||0)+5;
+  openPerson.member=true; takings.cash+=10; cash+=10;
+  closePerson(); renderPeople(); render();
+});
+
 function tick(){$('#clock').textContent=new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})}
 tick(); setInterval(tick,15000);
 render();
