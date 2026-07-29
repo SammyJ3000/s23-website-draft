@@ -386,11 +386,11 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
       </div>
       <div class="ed">
         <figure class="shot shot--wide wipe" style="margin:0;--d:0">
-          <img src="img/boxing.jpg" alt="Members working the bags under neon lights at S23" decoding="async">
+          <img width="1600" height="1300" src="img/boxing.jpg" alt="Members working the bags under neon lights at S23" decoding="async">
           <figcaption class="shot-cap"><b>Under the lights</b><span>Bag work, boxes and ropes on the main floor</span></figcaption>
         </figure>
         <figure class="shot shot--tall wipe" style="margin:0;--d:1">
-          <img src="img/outdoor.jpg" alt="Outdoor session with tyres and sledgehammers behind the gym" decoding="async">
+          <img width="1200" height="1500" src="img/outdoor.jpg" alt="Outdoor session with tyres and sledgehammers behind the gym" decoding="async">
           <figcaption class="shot-cap"><b>Out the back</b><span>Tyres and hammers when the sun's out</span></figcaption>
         </figure>
       </div>
@@ -421,17 +421,17 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
       <div class="tf">
         <figure class="tfc rev wipe" style="margin:0;--d:0">
           <span class="tfc-tag">Before → After</span>
-          <img src="img/ba1.jpg" alt="Member transformation, before and after" loading="lazy">
+          <img width="1000" height="1000" src="img/ba1.jpg" alt="Member transformation, before and after" loading="lazy">
           <figcaption class="tfc-bar"><b>Dave</b><span>12 weeks</span></figcaption>
         </figure>
         <figure class="tfc rev wipe" style="margin:0;--d:1">
           <span class="tfc-tag">Before → After</span>
-          <img src="img/ba2.jpg" alt="Member transformation, before and after" loading="lazy">
+          <img width="1000" height="1000" src="img/ba2.jpg" alt="Member transformation, before and after" loading="lazy">
           <figcaption class="tfc-bar"><b>Member</b><span>16 weeks</span></figcaption>
         </figure>
         <figure class="tfc rev wipe" style="margin:0;--d:2">
           <span class="tfc-tag">Before → After</span>
-          <img src="img/ba3.jpg" alt="Member transformation, before and after" loading="lazy">
+          <img width="1000" height="1000" src="img/ba3.jpg" alt="Member transformation, before and after" loading="lazy">
           <figcaption class="tfc-bar"><b>Member</b><span>20 weeks</span></figcaption>
         </figure>
       </div>
@@ -476,11 +476,11 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
       </div>
       <div class="ed">
         <figure class="shot shot--wide wipe" style="margin:0;--d:0">
-          <img src="img/mates.jpg" alt="Two members outside the gym after a session" loading="lazy">
+          <img width="1600" height="1300" src="img/mates.jpg" alt="Two members outside the gym after a session" loading="lazy">
           <figcaption class="shot-cap"><b>Bring someone with you</b><span>Tell us who you're training with and we'll keep you together</span></figcaption>
         </figure>
         <figure class="shot shot--tall wipe" style="margin:0;--d:1">
-          <img src="img/floor.jpg" alt="Circuit class mid-session" loading="lazy">
+          <img width="1200" height="1500" src="img/floor.jpg" alt="Circuit class mid-session" loading="lazy">
           <figcaption class="shot-cap"><b>Your station's waiting</b><span>Sent to your phone before you arrive</span></figcaption>
         </figure>
       </div>
@@ -652,6 +652,22 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 });
 addEventListener('hashchange', revealHash);
 revealHash();
+
+/* The display fonts load after first paint and change every heading's height,
+   so an early anchor jump ends up in the wrong place. Re-settle once things
+   have actually stopped moving. */
+function settleScroll() {
+  const id = location.hash.slice(1);
+  if (!id) return;
+  const el = document.getElementById(id);
+  if (!el) return;
+  revealNow(el);
+  el.scrollIntoView({ block: 'start', behavior: 'auto' });
+}
+addEventListener('load', () => setTimeout(settleScroll, 80));
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(() => setTimeout(settleScroll, 80));
+}
 
 /* Safety net: rescue only what's already on screen, so below-fold
    sections keep their reveal when the visitor scrolls to them. */
