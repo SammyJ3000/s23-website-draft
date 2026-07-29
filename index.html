@@ -99,8 +99,8 @@ img{display:block;max-width:100%}
     linear-gradient(to top,var(--ink) 1%,rgba(5,5,6,.88) 24%,rgba(5,5,6,.34) 58%,rgba(5,5,6,.66) 100%),
     linear-gradient(to right,rgba(5,5,6,.9) 0%,rgba(5,5,6,.3) 54%,transparent 84%)}
 .hero-in{position:relative;z-index:2;width:100%}
-.hero h1{font-size:clamp(3rem,8.8vw,7.4rem);max-width:15ch;margin-top:1.3rem}
-.hero h1 .serif{display:block;font-size:.72em;line-height:.98;margin-top:.06em;color:var(--bone);text-transform:none;font-weight:400}
+.hero h1{font-size:clamp(2.5rem,7.4vw,6.3rem);max-width:17ch;margin-top:.9rem}
+.hero h1 .serif{display:block;font-size:.5em;line-height:1.04;margin-top:.22em;color:var(--bone);text-transform:none;font-weight:400}
 .kicker{font-family:var(--f-d);text-transform:uppercase;font-size:clamp(1rem,.85rem + 1.1vw,1.75rem);
   letter-spacing:.04em;color:var(--dim);margin:0 0 .5rem}
 .hero-sub{display:grid;grid-template-columns:1fr;gap:2.2rem;margin-top:clamp(2rem,4vw,3.2rem)}
@@ -150,9 +150,11 @@ section{padding:clamp(4.5rem,10vw,8.5rem) 0;position:relative}
 .stars{display:block;color:var(--red-hot);font-size:.9rem;letter-spacing:.24em;font-style:normal;margin-bottom:.35rem}
 
 /* ── reveal ── */
-.rev{opacity:0;transform:translateY(30px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rev{opacity:0;transform:translateY(30px);transition:opacity .9s var(--ease),transform .9s var(--ease);
+  transition-delay:calc(var(--d,0) * 100ms)}
 .rev.in{opacity:1;transform:none}
-.wipe{clip-path:inset(0 100% 0 0);transition:clip-path 1.15s var(--ease)}
+.wipe{clip-path:inset(0 100% 0 0);transition:clip-path 1.15s var(--ease);
+  transition-delay:calc(var(--d,0) * 120ms)}
 .wipe.in{clip-path:inset(0 0 0 0)}
 .mask{display:block;overflow:hidden}
 .mask>span{display:block;transform:translateY(102%);transition:transform 1s var(--ease)}
@@ -340,12 +342,11 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
     <div class="hero-media" aria-hidden="true"><img src="img/hero.jpg" alt="" fetchpriority="high"></div>
     <div class="wrap hero-in">
       <span class="label fade-up" style="--w:0">Newton-le-Willows · Est. 2014</span>
-      <p class="kicker fade-up" style="--w:1">We didn't invent circuit training</p>
       <h1>
-        <span class="rise-w" style="--w:0"><span>We're</span></span>
-        <span class="rise-w" style="--w:1"><span>just</span></span>
-        <span class="rise-w" style="--w:2"><span>the</span></span>
-        <span class="serif rise-w" style="--w:3"><span class="chrome">best at it</span></span>
+        <span class="rise-w" style="--w:0"><span>We didn't</span></span>
+        <span class="rise-w" style="--w:1"><span>invent circuit</span></span>
+        <span class="rise-w" style="--w:2"><span>training</span></span>
+        <span class="serif rise-w" style="--w:3"><span class="chrome">We're just the best at it</span></span>
       </h1>
       <div class="hero-sub">
         <div class="fade-up" style="--w:4">
@@ -371,12 +372,12 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
   <!-- ══ PROOF ══ -->
   <section style="padding-block:clamp(3rem,6vw,4.5rem)">
     <div class="wrap">
-      <div class="proof rev">
-        <div class="pf"><b class="chrome count" data-to="2014" data-plain="1">2014</b><span>Training since</span></div>
-        <div class="pf"><b class="chrome count" data-to="100" data-suffix="+">0</b><span>Through the door nightly</span></div>
-        <div class="pf"><b class="chrome count" data-to="12">0</b><span>Years on Southworth Road</span></div>
+      <div class="proof">
+        <div class="pf rev" style="--d:0"><b class="chrome count" data-to="2014" data-plain="1">2014</b><span>Training since</span></div>
+        <div class="pf rev" style="--d:1"><b class="chrome count" data-to="100" data-suffix="+">0</b><span>Through the door nightly</span></div>
+        <div class="pf rev" style="--d:2"><b class="chrome count" data-to="12">0</b><span>Years on Southworth Road</span></div>
         <!-- PLACEHOLDER: replace 4.9 with S23's real Google rating before this goes live -->
-        <div class="pf"><b class="chrome">4.9</b><span><i class="stars">★★★★★</i>Rated on Google</span></div>
+        <div class="pf rev" style="--d:3"><b class="chrome">4.9</b><span><i class="stars">★★★★★</i>Rated on Google</span></div>
       </div>
     </div>
   </section>
@@ -390,11 +391,11 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
         <p>Bags, tyres, ropes, sledgehammers, boxes. Inside under the lights or out the back when the weather's good. You rotate through every station — nobody stands about waiting.</p>
       </div>
       <div class="ed">
-        <figure class="shot shot--wide wipe" style="margin:0">
+        <figure class="shot shot--wide wipe" style="margin:0;--d:0">
           <img src="img/boxing.jpg" alt="Members working the bags under neon lights at S23" loading="lazy">
           <figcaption class="shot-cap"><b>Under the lights</b><span>Bag work, boxes and ropes on the main floor</span></figcaption>
         </figure>
-        <figure class="shot shot--tall wipe" style="margin:0">
+        <figure class="shot shot--tall wipe" style="margin:0;--d:1">
           <img src="img/outdoor.jpg" alt="Outdoor session with tyres and sledgehammers behind the gym" loading="lazy">
           <figcaption class="shot-cap"><b>Out the back</b><span>Tyres and hammers when the sun's out</span></figcaption>
         </figure>
@@ -424,17 +425,17 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
       </div>
       <!-- PLACEHOLDER: timeframes below are illustrative — confirm the real ones with Jill -->
       <div class="tf">
-        <figure class="tfc rev" style="margin:0">
+        <figure class="tfc rev wipe" style="margin:0;--d:0">
           <span class="tfc-tag">Before → After</span>
           <img src="img/ba1.jpg" alt="Member transformation, before and after" loading="lazy">
           <figcaption class="tfc-bar"><b>Dave</b><span>12 weeks</span></figcaption>
         </figure>
-        <figure class="tfc rev" style="margin:0">
+        <figure class="tfc rev wipe" style="margin:0;--d:1">
           <span class="tfc-tag">Before → After</span>
           <img src="img/ba2.jpg" alt="Member transformation, before and after" loading="lazy">
           <figcaption class="tfc-bar"><b>Member</b><span>16 weeks</span></figcaption>
         </figure>
-        <figure class="tfc rev" style="margin:0">
+        <figure class="tfc rev wipe" style="margin:0;--d:2">
           <span class="tfc-tag">Before → After</span>
           <img src="img/ba3.jpg" alt="Member transformation, before and after" loading="lazy">
           <figcaption class="tfc-bar"><b>Member</b><span>20 weeks</span></figcaption>
@@ -455,15 +456,15 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
            reviews from their Facebook page or Google before going live.
            ══════════════════════════════════════════════════════════════ -->
       <div class="quotes">
-        <blockquote class="quote rev">
+        <blockquote class="quote rev" style="--d:0">
           <p>I'd not set foot in a gym in fifteen years. First night I was terrified and by the end everyone knew my name.</p>
           <cite><b>Placeholder</b><span>Replace with a real review</span></cite>
         </blockquote>
-        <blockquote class="quote rev">
+        <blockquote class="quote rev" style="--d:1">
           <p>It's the only thing I've ever stuck at. You can't skip it — someone always texts asking where you were.</p>
           <cite><b>Placeholder</b><span>Replace with a real review</span></cite>
         </blockquote>
-        <blockquote class="quote rev">
+        <blockquote class="quote rev" style="--d:2">
           <p>Never the same session twice, and they push you without making you feel daft for being a beginner.</p>
           <cite><b>Placeholder</b><span>Replace with a real review</span></cite>
         </blockquote>
@@ -480,11 +481,11 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
         <p>Pick your class, pay, done. We'll send your starting station before you arrive — walk in and go straight to it.</p>
       </div>
       <div class="ed">
-        <figure class="shot shot--wide wipe" style="margin:0">
+        <figure class="shot shot--wide wipe" style="margin:0;--d:0">
           <img src="img/mates.jpg" alt="Two members outside the gym after a session" loading="lazy">
           <figcaption class="shot-cap"><b>Bring someone with you</b><span>Tell us who you're training with and we'll keep you together</span></figcaption>
         </figure>
-        <figure class="shot shot--tall wipe" style="margin:0">
+        <figure class="shot shot--tall wipe" style="margin:0;--d:1">
           <img src="img/floor.jpg" alt="Circuit class mid-session" loading="lazy">
           <figcaption class="shot-cap"><b>Your station's waiting</b><span>Sent to your phone before you arrive</span></figcaption>
         </figure>
@@ -527,21 +528,21 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
         <p>Come once or come every night. The more you train, the less each class costs — and nothing locks you in.</p>
       </div>
       <div class="prices">
-        <article class="price rev">
+        <article class="price rev" style="--d:0">
           <span class="price-name">Drop-in</span>
           <span class="price-fig chrome">£3.50</span>
           <span class="price-per">One class</span>
           <ul><li>Any session, any night</li><li>Pay on your phone</li><li>Sorted in under a minute</li></ul>
           <a class="btn btn--ghost" href="#book">Book one</a>
         </article>
-        <article class="price rev">
+        <article class="price rev" style="--d:1">
           <span class="price-name">Weekly</span>
           <span class="price-fig chrome">£10</span>
           <span class="price-per">5 classes · £2 each</span>
           <ul><li>Five sessions a week</li><li>Renews automatically</li><li>Cancel any time</li></ul>
           <a class="btn btn--ghost" href="#book">Get weekly</a>
         </article>
-        <article class="price price--feature rev">
+        <article class="price price--feature rev" style="--d:2">
           <span class="best">Most popular</span>
           <span class="price-name">Monthly</span>
           <span class="price-fig">£40</span>
@@ -549,7 +550,7 @@ footer{border-top:1px solid var(--line-2);padding:3.4rem 0 6rem;background:rgba(
           <ul><li>Twenty sessions a month</li><li>Renews automatically</li><li>Best for 4–5 nights a week</li><li>Cancel any time</li></ul>
           <a class="btn" href="#book">Get monthly</a>
         </article>
-        <article class="price rev">
+        <article class="price rev" style="--d:2">
           <span class="price-name">Annual</span>
           <span class="price-fig chrome">£400</span>
           <span class="price-per">Unlimited · all year</span>
@@ -644,10 +645,13 @@ if (!reduced) {
   document.querySelectorAll('.rev, .wipe, .mask').forEach(el => el.classList.add('in'));
 }
 
-/* Safety net: if any observer misses, reveal rather than leave a blank gap */
+/* Safety net: rescue only what's already on screen, so below-fold
+   sections keep their reveal when the visitor scrolls to them. */
 setTimeout(() => {
-  document.querySelectorAll('.rev:not(.in), .wipe:not(.in), .mask:not(.in)')
-    .forEach(el => el.classList.add('in'));
+  document.querySelectorAll('.rev:not(.in), .wipe:not(.in), .mask:not(.in)').forEach(el => {
+    const r = el.getBoundingClientRect();
+    if (r.top < innerHeight && r.bottom > 0) el.classList.add('in');
+  });
 }, 4000);
 
 /* ── counters ── */
