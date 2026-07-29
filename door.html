@@ -181,6 +181,19 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 .seg button[aria-pressed="true"]{background:linear-gradient(160deg,var(--red-hot),var(--red));border-color:rgba(255,255,255,.24);color:#fff}
 .muted{color:var(--dim);font-size:.79rem;margin:.9rem 0 0}
 
+/* ══ lock-up list ══ */
+.lock-up{border:1px solid rgba(255,176,32,.4);background:rgba(255,176,32,.07);border-radius:14px;
+  padding:1.1rem 1.15rem;margin-bottom:1.4rem}
+.lock-up h3{font-size:1.15rem;letter-spacing:.06em;color:var(--owe)}
+.lock-up p{margin:.4rem 0 .9rem;font-size:.85rem;color:var(--dim)}
+.lu-row{display:flex;align-items:center;gap:.7rem;padding:.6rem .75rem;border-radius:10px;
+  background:rgba(5,5,6,.5);border:1px solid var(--line-2);font-size:.9rem}
+.lu-row+.lu-row{margin-top:.35rem}
+.lu-row b{font-weight:500}
+.lu-row span{color:var(--dim);font-size:.8rem}
+.lu-amt{margin-left:auto;color:var(--owe) !important;font-weight:500}
+.b--nudge{border-color:rgba(255,176,32,.55);color:var(--owe)}
+
 /* ══ tabs ══ */
 .tabs{display:flex;gap:.35rem;padding:.55rem clamp(.9rem,2vw,1.5rem);flex:none;
   border-bottom:1px solid var(--line-2);background:rgba(8,8,10,.6)}
@@ -365,6 +378,7 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
 
 <div class="ov" id="ovOwner"><div class="sheet">
   <div class="sh"><div><h2>Tonight's numbers</h2><p>Monday 18:30 Circuits</p></div><button class="x" data-close>×</button></div>
+  <div id="lockup"></div>
   <div class="kpis">
     <div class="kpi"><b id="kIn" style="color:var(--in)">0</b><span>Attended</span></div>
     <div class="kpi"><b id="kNo" style="color:var(--red-hot)">0</b><span>No-shows</span></div>
@@ -405,6 +419,10 @@ button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit
   <div class="sh"><div><h2>Walk-in</h2><p>Not booked on — add them and give them a station</p></div><button class="x" data-close>×</button></div>
   <label class="field"><span>Name</span><input id="wName" placeholder="e.g. Chris Hughes" autocomplete="off"></label>
   <label class="field"><span>Training with (optional)</span><input id="wPair" placeholder="e.g. Dave Ellison" autocomplete="off"></label>
+  <label class="field"><span>Mobile <i style="font-style:normal;opacity:.6">— optional, for offers later</i></span>
+    <input id="wPhone" type="tel" inputmode="tel" placeholder="07700 900123" autocomplete="off"></label>
+  <label class="field"><span>Email <i style="font-style:normal;opacity:.6">— optional</i></span>
+    <input id="wEmail" type="email" inputmode="email" placeholder="them@example.com" autocomplete="off"></label>
   <div class="field"><span>Paying</span><div class="seg">
     <button id="wCash" aria-pressed="true">Cash £3.50</button>
     <button id="wCard" aria-pressed="false">Card £3.50</button>
@@ -462,6 +480,7 @@ let pending=null, chosen=PACKS[0];
 
 let stations=Array.from({length:NSTATIONS},(_,i)=>({n:i+1,ex:EX[i],places:[null,null],held:[null,null]}));
 let cash=0, lastIn=null, takings={cash:0,card:0};
+let toAdd=[];   /* packages sold at the desk — must be granted in Gymcatch */
 
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
 const initials=n=>n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
@@ -507,7 +526,7 @@ function checkIn(p){
   s.places[i]=p.name; p.station=s.n; p.in=true; lastIn=p;
   if(p.owes>0&&!p.paid){ p.paid=true; cash+=p.owes; takings.cash+=p.owes; }
   else if(p.credits>0&&p.credits<999&&!p.spent){ p.credits-=1; p.spent=true; }
-  render();
+  render(); badge();
   const cell=document.querySelector('[data-st="'+s.n+'"]');
   if(cell){ cell.classList.add('flash'); setTimeout(()=>cell.classList.remove('flash'),700); }
   const mate=p.partner?byName(p.partner):null;
@@ -595,6 +614,10 @@ function settle(method){
   /* add the credits only — checkIn() spends tonight's one, so don't deduct twice */
   p.credits=(chosen.n===null?999:(p.credits||0)+chosen.n);
   p.pass=chosen.n===null?'Unlimited':(chosen.n>1?'Credits':null);
+  /* a single class is used up tonight — only packages need granting in Gymcatch */
+  if(chosen.n===null||chosen.n>1){
+    toAdd.push({name:p.name,label:chosen.label,price:chosen.price,method:method,phone:p.phone||''});
+  }
   $('#ovTill').classList.remove('show'); pending=null; checkIn(p);
 }
 $('#tillCash').addEventListener('click',()=>settle('cash'));
@@ -617,12 +640,23 @@ $('#fireBtn').addEventListener('click',()=>{
   $('#fireMeta').textContent=people.filter(p=>p.in).length+' people in the building · '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
   open('#ovFire');
 });
+function badge(){
+  const b=$('#ownerBtn');
+  b.textContent = toAdd.length ? "Tonight's numbers ("+toAdd.length+")" : "Tonight's numbers";
+  b.classList.toggle('b--nudge', toAdd.length>0);
+}
 $('#ownerBtn').addEventListener('click',()=>{
   const inP=people.filter(p=>p.in), no=people.filter(p=>!p.in&&!p.walkin);
   const owed=people.filter(p=>p.owes>0&&!p.paid).reduce((t,p)=>t+p.owes,0);
   $('#kIn').textContent=inP.length; $('#kNo').textContent=no.length;
   $('#kWalk').textContent=people.filter(p=>p.walkin).length; $('#kCash').textContent='£'+cash.toFixed(2);
   const debtors=people.filter(p=>p.debt>0);
+  $('#lockup').innerHTML = toAdd.length ? (
+    '<div class="lock-up"><h3>Before you lock up</h3>'
+    +'<p>'+toAdd.length+' package'+(toAdd.length>1?'s':'')+' sold at the desk — add '+(toAdd.length>1?'these':'this')+' in Gymcatch so the balance is there next time.</p>'
+    +toAdd.map(t=>'<div class="lu-row"><b>'+t.name+'</b><span>'+t.label+'</span>'
+      +'<span class="lu-amt">£'+(t.price%1?t.price.toFixed(2):t.price)+' '+t.method+'</span></div>').join('')
+    +'</div>') : '';
   $('#ownerRows').innerHTML=[
     ['On credits or a membership',people.filter(p=>p.pass&&p.in).length+' people','No payment needed'],
     ['Cash taken','£'+takings.cash.toFixed(2),'No card fee on any of it'],
@@ -642,13 +676,17 @@ $('#memberBtn').addEventListener('click',()=>{
   }
   open('#ovMember');
 });
-$('#addBtn').addEventListener('click',()=>{$('#wName').value='';$('#wPair').value='';open('#ovAdd');setTimeout(()=>$('#wName').focus(),120)});
+$('#addBtn').addEventListener('click',()=>{['#wName','#wPair','#wPhone','#wEmail'].forEach(k=>$(k).value='');open('#ovAdd');setTimeout(()=>$('#wName').focus(),120)});
 let payCash=true;
 $('#wCash').addEventListener('click',()=>{payCash=true;$('#wCash').setAttribute('aria-pressed','true');$('#wCard').setAttribute('aria-pressed','false')});
 $('#wCard').addEventListener('click',()=>{payCash=false;$('#wCard').setAttribute('aria-pressed','true');$('#wCash').setAttribute('aria-pressed','false')});
 $('#wGo').addEventListener('click',()=>{
   const name=$('#wName').value.trim(); if(!name){$('#wName').focus();return}
-  const p={id:Date.now(),name,pass:null,owes:payCash?3.5:0,partner:$('#wPair').value.trim()||null,station:null,in:false,walkin:true,paid:!payCash};
+  const p={id:Date.now(),name,pass:null,owes:payCash?3.5:0,partner:$('#wPair').value.trim()||null,
+    station:null,in:false,walkin:true,paid:!payCash,
+    phone:$('#wPhone').value.trim()||'', email:$('#wEmail').value.trim()||'',
+    member:false, renew:false, credits:0, lastIn:'Tonight', visits:1, lifetime:3.5};
+  if(!payCash) takings.card+=3.5;
   people.push(p); $('#ovAdd').classList.remove('show'); checkIn(p);
 });
 /* ══════════ PEOPLE TAB ══════════ */
@@ -747,6 +785,7 @@ $('#soCredits').addEventListener('click',()=>{
   if(!openPerson) return;
   openPerson.credits=(openPerson.credits||0)+5;
   openPerson.member=true; takings.cash+=10; cash+=10;
+  toAdd.push({name:openPerson.name,label:'5 classes',price:10,method:'cash',phone:openPerson.phone||''});
   closePerson(); renderPeople(); render();
 });
 
