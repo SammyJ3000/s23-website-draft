@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>S23 — Booking</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  /* Isolated frame: Gymcatch injects unscoped html/body rules, so it gets
+     its own document rather than repainting the main site white. */
+  html,body{margin:0;padding:0;background:#fff}
+  body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  #wrap{padding:8px}
+  .fail{display:none;padding:3rem 1.5rem;text-align:center;color:#555;font-size:.95rem;line-height:1.6}
+  .fail b{display:block;font-size:1.1rem;color:#111;margin-bottom:.5rem}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <gymcatch-embedded key="80589cfa-3b75-4e47-862d-f1a7da09dc96"></gymcatch-embedded>
+</div>
+<div class="fail" id="fail">
+  <b>Booking is being connected</b>
+  Sessions can be booked directly through Gymcatch in the meantime.
+</div>
+
+<script src="https://gymcatch.com/app/js/bootstrap.js"></script>
+<script>
+/* tell the parent how tall we are so the iframe can size itself */
+function report(){
+  const h = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight, 420);
+  parent.postMessage({ gcHeight: h }, '*');
+}
+new ResizeObserver(report).observe(document.body);
+addEventListener('load', report);
+setInterval(report, 1200);
+
+/* if the widget errors, show a plain message instead of a raw error panel */
+setTimeout(() => {
+  const t = (document.body.textContent || '').toLowerCase();
+  if (t.includes('error') || t.includes('only available')) {
+    document.getElementById('wrap').style.display = 'none';
+    document.getElementById('fail').style.display = 'block';
+    report();
+  }
+}, 6000);
+</script>
+</body>
+</html>
