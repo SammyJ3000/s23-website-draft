@@ -35,15 +35,19 @@ new ResizeObserver(report).observe(document.body);
 addEventListener('load', report);
 setInterval(report, 1200);
 
-/* if the widget errors, show a plain message instead of a raw error panel */
+/* Only fall back if the widget produced essentially nothing.
+   Don't sniff for the word "error" — Gymcatch's own markup contains it. */
 setTimeout(() => {
-  const t = (document.body.textContent || '').toLowerCase();
-  if (t.includes('error') || t.includes('only available')) {
-    document.getElementById('wrap').style.display = 'none';
+  const wrap = document.getElementById('wrap');
+  const el = wrap.querySelector('gymcatch-embedded');
+  const text = (wrap.textContent || '').replace(/\s+/g, ' ').trim();
+  const empty = !el || wrap.getBoundingClientRect().height < 120 || text.length < 60;
+  if (empty) {
+    wrap.style.display = 'none';
     document.getElementById('fail').style.display = 'block';
     report();
   }
-}, 6000);
+}, 8000);
 </script>
 </body>
 </html>

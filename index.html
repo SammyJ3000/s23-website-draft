@@ -268,7 +268,7 @@ tbody tr:last-child td{border-bottom:0}
 /* ── booking ── */
 .embed-shell{border:1px solid var(--line);background:linear-gradient(162deg,rgba(246,246,247,.055),rgba(246,246,247,.01));
   padding:clamp(.6rem,1.6vw,1.1rem);min-height:440px;box-shadow:0 1px 0 rgba(255,255,255,.06) inset}
-#gcFrame{display:block;width:100%;height:620px;border:0;background:#fff;transition:height .35s var(--ease)}
+#gcFrame{display:block;width:100%;height:780px;border:0;background:#fff;transition:height .35s var(--ease)}
 [hidden]{display:none !important}
 
 /* ── find us ── */
@@ -726,7 +726,7 @@ new IntersectionObserver(([e]) => {
 addEventListener('message', (e) => {
   const h = e.data && e.data.gcHeight;
   const f = document.getElementById('gcFrame');
-  if (h && f) f.style.height = Math.min(h + 16, 1600) + 'px';
+  if (h && f) f.style.height = Math.min(h + 16, 2600) + 'px';
 });
 </script>
 </body>
